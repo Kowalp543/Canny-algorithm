@@ -36,12 +36,12 @@ def gaussian_smoothing(image, sigma):
 
 def calculate_gradients(image):
     gradient_y, gradient_x = np.gradient(image)
-    gradient_magnitude = np.sqrt(gradient_x ** 2 + gradient_y ** 2)   #długosc strzalki
+    gradient_magnitude = np.sqrt(gradient_x ** 2 + gradient_y ** 2)   
 
-    gradient_angle = np.arctan2(np.abs(gradient_y), np.abs(gradient_x))   #kierunek strzłki
+    gradient_angle = np.arctan2(np.abs(gradient_y), np.abs(gradient_x))  
     return gradient_magnitude, gradient_angle
 
-def non_maximum_supression(gradient_magnitude, gradient_angle): #wyznacza potencjalne krawędzie
+def non_maximum_supression(gradient_magnitude, gradient_angle): 
     size = gradient_magnitude.shape
     potential_edges = np.zeros_like(gradient_magnitude)
 
@@ -52,22 +52,22 @@ def non_maximum_supression(gradient_magnitude, gradient_angle): #wyznacza potenc
 
             # 0
             if 0 <= angle[i, j] < 22.5 or 337.5 <= angle[i, j] <= 360 or 157.5 <= angle[i, j] < 180:
-                before = gradient_magnitude[i, j+1] # prawo lewo porownuje
+                before = gradient_magnitude[i, j+1] 
                 after = gradient_magnitude[i, j-1]
 
             # 45
             elif 22.5 <= angle[i, j] < 67.5:
-                before = gradient_magnitude[i+1, j-1] # po przekatnej
+                before = gradient_magnitude[i+1, j-1] 
                 after = gradient_magnitude[i-1, j+1]
 
             # 90
             elif 67.5 <= angle[i, j] < 112.5:
-                before = gradient_magnitude[i+1, j] # gora dol
+                before = gradient_magnitude[i+1, j] 
                 after = gradient_magnitude[i-1, j]
 
             # 135
             else:
-                before = gradient_magnitude[i-1, j-1] # po przekatnej
+                before = gradient_magnitude[i-1, j-1] 
                 after = gradient_magnitude[i+1, j+1]
 
             if gradient_magnitude[i, j] >= before and gradient_magnitude[i, j] >= after:
@@ -82,7 +82,7 @@ def otsu_threshold(image):
 
     return
 
-def double_threshold(potential_edges):  # bez magnitudy
+def double_threshold(potential_edges):  
 
     HT = potential_edges.max() * 0.12
     LT = HT * 0.07
@@ -145,10 +145,10 @@ plt.show()
 #OTSU
 
 def otsu_threshold(image, nbins=256):
-    hist, bins = np.histogram(image.ravel(), nbins)          #lista ze wszytskimi wartosciami, wylicza wairancje, liczy dla kazdego kroku dwie wariancje, pozniej jak sie je doda to mamy dwa zbiory pikseli 50% czarnych 50% białych
+    hist, bins = np.histogram(image.ravel(), nbins)         
     result = np.zeros(image.shape)
 
-    weight = np.cumsum(hist)                                #otsu binaryzuje
+    weight = np.cumsum(hist)                                
     weight_inversed = np.cumsum(hist[::-1])[::-1]
 
     mean = np.cumsum(hist * bins[:-1]) / weight
